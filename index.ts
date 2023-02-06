@@ -45,13 +45,13 @@ obs$.subscribe((x) => console.log(x));
 const numbers = [1, 2, 3, 4, 5];
 const stopSignal = timer(3000);
 
-of(...numbers)
-  .pipe(takeUntil(stopSignal))
-  .subscribe(
-    (x) => console.log(`emitted number: ${x}`),
-    (error) => console.error(error),
-    () => console.log('completed')
-  );
+// of(...numbers)
+//   .pipe(takeUntil(stopSignal))
+//   .subscribe(
+//     (x) => console.log(`emitted number: ${x}`),
+//     (error) => console.error(error),
+//     () => console.log('completed')
+//   );
 
 // 3)))
 //
