@@ -10,6 +10,10 @@ import {
   scan,
   reduce,
   map,
+  forkJoin,
+  combineLatestWith,
+  toArray,
+  concatAll,
 } from 'rxjs';
 
 // 1))
@@ -27,16 +31,18 @@ const people2 = [
   { name: 'Kate', age: 40 },
 ];
 
-const obs$ = from([people1, people2]).pipe(
-  mergeMap((people) =>
-    from(people).pipe(
-      filter((person) => person.name[0] === 'J'),
-      reduce((totalAge, person) => totalAge + person.age, 0)
-    )
-  )
-);
+const combinedAgesPeople1 = people1
+  .filter((person) => person.name.startsWith('J'))
+  .reduce((totalAge, person) => totalAge + person.age, 0);
+const combinedAgesPeople2 = people2
+  .filter((person) => person.name.startsWith('J'))
+  .reduce((totalAge, person) => totalAge + person.age, 0);
 
-obs$.subscribe((x) => console.log(x));
+forkJoin([of(combinedAgesPeople1), of(combinedAgesPeople2)])
+  .pipe(map((people) => [people[0], people[1]]))
+  .subscribe({
+    next: (value) => console.log(value),
+  });
 
 // 2)))
 //
@@ -45,13 +51,13 @@ obs$.subscribe((x) => console.log(x));
 const numbers = [1, 2, 3, 4, 5];
 const stopSignal = timer(3000);
 
-// of(...numbers)
-//   .pipe(takeUntil(stopSignal))
-//   .subscribe(
-//     (x) => console.log(`emitted number: ${x}`),
-//     (error) => console.error(error),
-//     () => console.log('completed')
-//   );
+of(...numbers)
+  .pipe(takeUntil(stopSignal))
+  .subscribe(
+    (x) => console.log(`emitted number: ${x}`),
+    (error) => console.error(error),
+    () => console.log('completed')
+  );
 
 // 3)))
 //
